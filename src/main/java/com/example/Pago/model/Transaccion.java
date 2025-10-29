@@ -27,12 +27,12 @@ public class Transaccion {
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 
-    // Método de negocio: Recargar tarjeta
+    
     public static void recargarTarjeta(String numero, Double recarga, ClienteRepository repo) {
-        Cliente c = repo.findByTarjeta(numero);
-        if (c != null) {
-            c.setSaldo(c.getSaldo() + recarga);
-            repo.save(c);
+        Cliente client = repo.findByTarjeta(numero);
+        if (client != null) {
+            client.setSaldo(client.getSaldo() + recarga);
+            repo.save(client);
         } else {
             throw new IllegalArgumentException("Tarjeta no encontrada");
         }

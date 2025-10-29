@@ -21,7 +21,7 @@ public class Carrito {
     private Long productoId;
     private Integer cantidad;
 
-    // Relación con carrito_items
+    
     @OneToMany(mappedBy = "carrito", cascade = CascadeType.ALL)
     private List<CarritoItem> items = new ArrayList<>();
 }

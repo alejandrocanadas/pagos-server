@@ -21,7 +21,7 @@ public class Paquete {
     private Double precio;
     private String destino;
 
-    // Métodos
+    
     public static Optional<Paquete> buscarPorId(Long id, PaqueteRepository repo) {
         return repo.findById(id);
     }

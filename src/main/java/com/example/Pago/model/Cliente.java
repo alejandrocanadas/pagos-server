@@ -17,7 +17,7 @@ public class Cliente {
 
     private String correo;
     private String nombre;
-    private String tipo; // tipo de tarjeta (Visa, Mastercard, etc.)
+    private String tipo; 
     private String tarjeta;
     private Date fechaVencimiento;
     private Double saldo;
