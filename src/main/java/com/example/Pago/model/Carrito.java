@@ -8,11 +8,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import jakarta.persistence.Id;
 import jakarta.persistence.CascadeType;
 
 @Entity
 @Table(name = "carrito")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Carrito {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
