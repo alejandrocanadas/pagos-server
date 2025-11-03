@@ -1,5 +1,7 @@
 package com.example.Pago.model;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.example.Pago.repository.ClienteRepository;
@@ -25,24 +27,14 @@ public class Transaccion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String numero; // número de tarjeta
     private Double monto;
-    private Date fecha = new Date();
+    private LocalDate fecha = LocalDate.now();
+
+    private String estado;
 
     @ManyToOne
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
-
-    
-    public static void recargarTarjeta(String numero, Double recarga, ClienteRepository repo) {
-        Cliente client = repo.findByTarjeta(numero);
-        if (client != null) {
-            client.setSaldo(client.getSaldo() + recarga);
-            repo.save(client);
-        } else {
-            throw new IllegalArgumentException("Tarjeta no encontrada");
-        }
-    }
 
     public Long getId() {
         return id;
@@ -50,14 +42,6 @@ public class Transaccion {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getNumero() {
-        return numero;
-    }
-
-    public void setNumero(String numero) {
-        this.numero = numero;
     }
 
     public Double getMonto() {
@@ -68,11 +52,11 @@ public class Transaccion {
         this.monto = monto;
     }
 
-    public Date getFecha() {
+    public LocalDate getFecha() {
         return fecha;
     }
 
-    public void setFecha(Date fecha) {
+    public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
     }
 
@@ -84,5 +68,11 @@ public class Transaccion {
         this.cliente = cliente;
     }
 
-    
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
 }

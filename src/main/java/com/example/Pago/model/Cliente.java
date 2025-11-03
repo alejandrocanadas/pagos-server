@@ -28,6 +28,13 @@ public class Cliente {
     private Date fechaVencimiento;
     private Double saldo;
 
+    public void recargar(Double monto) {
+        if (monto == null || monto <= 0) {
+            throw new IllegalArgumentException("El monto de recarga debe ser mayor que cero.");
+        }
+        this.saldo += monto;
+    }
+
     // Getters y Setters
     public Long getId() {
         return id;

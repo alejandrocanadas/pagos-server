@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Pago.model.Cliente;
+import com.example.Pago.model.Transaccion;
 import com.example.Pago.repository.ClienteRepository;
+import com.example.Pago.service.ClienteService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,46 +25,46 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ClienteController {
 
-    private final ClienteRepository clienteRepository;
+    private final ClienteService clienteService;
 
     @GetMapping
-    public List<Cliente> listarClientes() {
-        return clienteRepository.findAll();
+    public ResponseEntity<List<Cliente>> listarClientes() {
+        return ResponseEntity.ok(clienteService.listarClientes());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Cliente> obtenerPorId(@PathVariable Long id) {
-        return clienteRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Cliente cliente = clienteService.obtenerPorId(id);
+        return ResponseEntity.ok(cliente);
     }
 
     @PostMapping
     public ResponseEntity<Cliente> crearCliente(@RequestBody Cliente cliente) {
-        Cliente nuevo = clienteRepository.save(cliente);
+        Cliente nuevo = clienteService.crearCliente(cliente);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevo);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Cliente> actualizarCliente(@PathVariable Long id, @RequestBody Cliente datos) {
-        return clienteRepository.findById(id)
-                .map(cliente -> {
-                    cliente.setNombre(datos.getNombre());
-                    cliente.setCorreo(datos.getCorreo());
-                    cliente.setSaldo(datos.getSaldo());
-                    cliente.setTipo(datos.getTipo());
-                    cliente.setTarjeta(datos.getTarjeta());
-                    cliente.setFechaVencimiento(datos.getFechaVencimiento());
-                    return ResponseEntity.ok(clienteRepository.save(cliente));
-                })
-                .orElse(ResponseEntity.notFound().build());
+        Cliente actualizado = clienteService.actualizarCliente(id, datos);
+        return ResponseEntity.ok(actualizado);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarCliente(@PathVariable Long id) {
-        if (!clienteRepository.existsById(id)) return ResponseEntity.notFound().build();
-        clienteRepository.deleteById(id);
+        clienteService.eliminarCliente(id);
         return ResponseEntity.noContent().build();
     }
-}
 
+    @PostMapping("/recargar")
+    public ResponseEntity<String> recargar(@RequestBody Cliente clienteRequest) {
+        try {
+            Cliente clienteActualizado = clienteService.recargarSaldo(clienteRequest.getTarjeta(), clienteRequest.getSaldo());
+            return ResponseEntity.ok("Recarga exitosa. Nuevo saldo: " + clienteActualizado.getSaldo());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+}
