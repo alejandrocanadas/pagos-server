@@ -23,17 +23,17 @@ public class ClienteService {
         return clienteRepository.findAll();
     }
 
-    public Cliente obtenerPorId(Long id) {
-        return clienteRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente con id " + id + " no encontrado"));
-    }
-
     public Cliente crearCliente(Cliente cliente) {
         return clienteRepository.save(cliente);
     }
 
-    public Cliente actualizarCliente(Long id, Cliente datos) {
-        Cliente cliente = obtenerPorId(id);
+    public Cliente obtenerPorId(Long id) {
+        return clienteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado con ID " + id));
+    }
+
+    public Cliente actualizarCliente(String cedula, Cliente datos) {
+        Cliente cliente = obtenerPorCedula(cedula);
         cliente.setNombre(datos.getNombre());
         cliente.setCorreo(datos.getCorreo());
         cliente.setSaldo(datos.getSaldo());
@@ -43,13 +43,14 @@ public class ClienteService {
         return clienteRepository.save(cliente);
     }
 
-    public void eliminarCliente(Long id) {
-        if (!clienteRepository.existsById(id)) {
-            throw new IllegalArgumentException("Cliente con id " + id + " no existe");
-        }
-        clienteRepository.deleteById(id);
+    public void eliminarPorCedula(String cedula) {
+        if (!clienteRepository.existsByCedula(cedula))
+            throw new RuntimeException("Cliente no encontrado con cédula " + cedula);
+        clienteRepository.deleteByCedula(cedula);
     }
 
+
+    //CAMBIO
     public Cliente recargarSaldo(String numeroTarjeta, Double monto) {
         Cliente cliente = clienteRepository.findByTarjeta(numeroTarjeta);
         if (cliente == null) {
@@ -61,5 +62,13 @@ public class ClienteService {
 
         cliente.recargar(monto);
         return clienteRepository.save(cliente);
+    }
+
+    public Cliente obtenerPorCedula(String cedula) {
+        return clienteRepository.findByCedula(cedula);
+    }
+
+    public boolean existePorCedula(String cedula) {
+        return clienteRepository.existsByCedula(cedula);
     }
 }

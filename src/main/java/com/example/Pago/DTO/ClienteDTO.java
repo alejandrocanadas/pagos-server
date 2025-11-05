@@ -3,10 +3,12 @@ package com.example.Pago.DTO;
 
 import java.util.Date;
 
+import jakarta.persistence.Column;
+
 public class ClienteDTO {
-    private Long id;
     private String correo;
     private String nombre;
+    private String cedula;
     private String tipo;              // Débito o Crédito
     private String tarjeta;
     private Date fechaVencimiento;
@@ -14,10 +16,10 @@ public class ClienteDTO {
 
     public ClienteDTO() {}
 
-    public ClienteDTO(Long id, String correo, String nombre, String tipo, String tarjeta, Date fechaVencimiento, Double saldo) {
-        this.id = id;
+    public ClienteDTO(String correo, String nombre, String cedula, String tipo, String tarjeta, Date fechaVencimiento, Double saldo) {
         this.correo = correo;
         this.nombre = nombre;
+        this.cedula = cedula;
         this.tipo = tipo;
         this.tarjeta = tarjeta;
         this.fechaVencimiento = fechaVencimiento;
@@ -25,9 +27,6 @@ public class ClienteDTO {
     }
 
     // Getters y Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
     public String getCorreo() { return correo; }
     public void setCorreo(String correo) { this.correo = correo; }
 
@@ -45,4 +44,7 @@ public class ClienteDTO {
 
     public Double getSaldo() { return saldo; }
     public void setSaldo(Double saldo) { this.saldo = saldo; }
+
+    public String getCedula() { return cedula; }
+    public void setCedula(String cedula) { this.cedula = cedula;}
 }

@@ -2,6 +2,7 @@ package com.example.Pago.model;
 
 import java.util.Date;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,6 +24,9 @@ public class Cliente {
 
     private String correo;
     private String nombre;
+
+    @Column(nullable = false, unique = true)
+    private String cedula;
     private String tipo; 
     private String tarjeta;
     private Date fechaVencimiento;

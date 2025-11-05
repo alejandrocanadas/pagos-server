@@ -13,9 +13,9 @@ public class EntityMapper {
     public static ClienteDTO toClienteDTO(Cliente c) {
         if (c == null) return null;
         return new ClienteDTO(
-            c.getId(),
             c.getCorreo(),
             c.getNombre(),
+            c.getCedula(),
             c.getTipo(),
             c.getTarjeta(),
             c.getFechaVencimiento(),
@@ -26,9 +26,9 @@ public class EntityMapper {
     public static Cliente toClienteEntity(ClienteDTO dto) {
         if (dto == null) return null;
         Cliente c = new Cliente();
-        c.setId(dto.getId());
         c.setCorreo(dto.getCorreo());
         c.setNombre(dto.getNombre());
+        c.setCedula(dto.getCedula());
         c.setTipo(dto.getTipo());
         c.setTarjeta(dto.getTarjeta());
         c.setFechaVencimiento(dto.getFechaVencimiento());

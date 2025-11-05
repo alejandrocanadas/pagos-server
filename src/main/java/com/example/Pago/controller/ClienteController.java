@@ -32,9 +32,9 @@ public class ClienteController {
         return ResponseEntity.ok(clienteService.listarClientes());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Cliente> obtenerPorId(@PathVariable Long id) {
-        Cliente cliente = clienteService.obtenerPorId(id);
+    @GetMapping("/{cedula}")
+    public ResponseEntity<Cliente> buscarPorCedula(@PathVariable String cedula) {
+        Cliente cliente = clienteService.obtenerPorCedula(cedula);
         return ResponseEntity.ok(cliente);
     }
 
@@ -45,17 +45,19 @@ public class ClienteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Cliente> actualizarCliente(@PathVariable Long id, @RequestBody Cliente datos) {
-        Cliente actualizado = clienteService.actualizarCliente(id, datos);
+    public ResponseEntity<Cliente> actualizarCliente(@PathVariable String cedula, @RequestBody Cliente datos) {
+        Cliente actualizado = clienteService.actualizarCliente(cedula, datos);
         return ResponseEntity.ok(actualizado);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarCliente(@PathVariable Long id) {
-        clienteService.eliminarCliente(id);
+    public ResponseEntity<Void> eliminarCliente(@PathVariable String cedula) {
+        clienteService.eliminarPorCedula(cedula);
         return ResponseEntity.noContent().build();
     }
 
+
+    //CAMBIO
     @PostMapping("/recargar")
     public ResponseEntity<String> recargar(@RequestBody Cliente clienteRequest) {
         try {
