@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.Pago.DTO.CarritoDTO;
+import com.example.Pago.DTO.PagoRequest;
 import com.example.Pago.DTO.TransaccionRespuestaDTO;
 import com.example.Pago.model.Carrito;
 import com.example.Pago.model.Transaccion;
@@ -28,8 +30,8 @@ public class CarritoController {
     private final CarritoService carritoService;
 
     @PostMapping
-    public ResponseEntity<Carrito> crearCarrito(@RequestBody Carrito dto) {
-        Carrito nuevo = carritoService.crearCarrito(dto.getCliente().getId());
+    public ResponseEntity<Carrito> crearCarrito(@RequestBody CarritoDTO dto) {
+        Carrito nuevo = carritoService.crearCarrito(dto.getClienteId());
         return ResponseEntity.ok(nuevo);
     }
 
@@ -47,8 +49,8 @@ public class CarritoController {
     }
 
     @PostMapping("/{id}/pagar")
-    public ResponseEntity<TransaccionRespuestaDTO> pagarCarrito(@PathVariable Long id) {
-        TransaccionRespuestaDTO transaccion = carritoService.pagarCarrito(id);
+    public ResponseEntity<Transaccion> pagarCarrito(@PathVariable Long id, @RequestBody PagoRequest request) {
+        Transaccion transaccion = carritoService.pagarCarrito(id, request.getNumeroTarjeta());
         return ResponseEntity.ok(transaccion);
     }
 }

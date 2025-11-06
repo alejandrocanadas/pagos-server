@@ -36,10 +36,6 @@ public class ClienteService {
         Cliente cliente = obtenerPorCedula(cedula);
         cliente.setNombre(datos.getNombre());
         cliente.setCorreo(datos.getCorreo());
-        cliente.setSaldo(datos.getSaldo());
-        cliente.setTipo(datos.getTipo());
-        cliente.setTarjeta(datos.getTarjeta());
-        cliente.setFechaVencimiento(datos.getFechaVencimiento());
         return clienteRepository.save(cliente);
     }
 
@@ -47,21 +43,6 @@ public class ClienteService {
         if (!clienteRepository.existsByCedula(cedula))
             throw new RuntimeException("Cliente no encontrado con cédula " + cedula);
         clienteRepository.deleteByCedula(cedula);
-    }
-
-
-    //CAMBIO
-    public Cliente recargarSaldo(String numeroTarjeta, Double monto) {
-        Cliente cliente = clienteRepository.findByTarjeta(numeroTarjeta);
-        if (cliente == null) {
-            throw new IllegalArgumentException("Cliente no encontrado con la tarjeta: " + numeroTarjeta);
-        }
-        if (monto == null || monto <= 0) {
-            throw new IllegalArgumentException("El monto debe ser mayor que cero");
-        }
-
-        cliente.recargar(monto);
-        return clienteRepository.save(cliente);
     }
 
     public Cliente obtenerPorCedula(String cedula) {

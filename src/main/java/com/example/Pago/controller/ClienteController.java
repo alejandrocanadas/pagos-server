@@ -56,17 +56,4 @@ public class ClienteController {
         return ResponseEntity.noContent().build();
     }
 
-
-    //CAMBIO
-    @PostMapping("/recargar")
-    public ResponseEntity<String> recargar(@RequestBody Cliente clienteRequest) {
-        try {
-            Cliente clienteActualizado = clienteService.recargarSaldo(clienteRequest.getTarjeta(), clienteRequest.getSaldo());
-            return ResponseEntity.ok("Recarga exitosa. Nuevo saldo: " + clienteActualizado.getSaldo());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
 }

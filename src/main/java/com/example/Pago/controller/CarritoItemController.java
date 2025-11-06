@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.Pago.DTO.CarritoItemDTO;
 import com.example.Pago.model.CarritoItem;
 import com.example.Pago.service.CarritoItemService;
 
@@ -25,10 +26,10 @@ public class CarritoItemController {
     private final CarritoItemService carritoItemService;
 
     @PostMapping
-    public ResponseEntity<CarritoItem> agregarItem(@RequestBody CarritoItem dto) {
+    public ResponseEntity<CarritoItem> agregarItem(@RequestBody CarritoItemDTO dto) {
         CarritoItem nuevo = carritoItemService.agregarItem(
-                dto.getCarrito().getId(),
-                dto.getProducto().getId(),
+                dto.getCarritoId(),
+                dto.getProductoId(),
                 dto.getCantidad());
         return ResponseEntity.ok(nuevo);
     }

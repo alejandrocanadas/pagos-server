@@ -1,11 +1,12 @@
 package com.example.Pago.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import com.example.Pago.model.Cliente;
 
+@Repository
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
-    Cliente findByTarjeta(String tarjeta);
     Cliente findByCedula(String cedula);
     void deleteByCedula(String cedula);
     boolean existsByCedula(String cedula);

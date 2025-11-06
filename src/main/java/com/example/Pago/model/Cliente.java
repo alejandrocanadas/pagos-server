@@ -1,12 +1,15 @@
 package com.example.Pago.model;
 
 import java.util.Date;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,17 +30,9 @@ public class Cliente {
 
     @Column(nullable = false, unique = true)
     private String cedula;
-    private String tipo; 
-    private String tarjeta;
-    private Date fechaVencimiento;
-    private Double saldo;
 
-    public void recargar(Double monto) {
-        if (monto == null || monto <= 0) {
-            throw new IllegalArgumentException("El monto de recarga debe ser mayor que cero.");
-        }
-        this.saldo += monto;
-    }
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Tarjeta> tarjetas;
 
     // Getters y Setters
     public Long getId() {
@@ -58,28 +53,6 @@ public class Cliente {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-    public String getTipo() {
-        return tipo;
-    }
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-    public String getTarjeta() {
-        return tarjeta;
-    }
-    public void setTarjeta(String tarjeta) {
-        this.tarjeta = tarjeta;
-    }
-    public Date getFechaVencimiento() {
-        return fechaVencimiento;
-    }
-    public void setFechaVencimiento(Date fechaVencimiento) {
-        this.fechaVencimiento = fechaVencimiento;
-    }
-    public Double getSaldo() {
-        return saldo;
-    }
-    public void setSaldo(Double saldo) {
-        this.saldo = saldo;
-    }
+
+
 }

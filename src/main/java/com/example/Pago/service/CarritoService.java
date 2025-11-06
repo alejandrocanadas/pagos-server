@@ -1,6 +1,7 @@
 package com.example.Pago.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,18 +9,22 @@ import org.springframework.stereotype.Service;
 
 import com.example.Pago.DTO.TransaccionRespuestaDTO;
 import com.example.Pago.model.Carrito;
+import com.example.Pago.model.CarritoItem;
 import com.example.Pago.model.Cliente;
+import com.example.Pago.model.Tarjeta;
 import com.example.Pago.model.Transaccion;
+import com.example.Pago.model.TransaccionItem;
 import com.example.Pago.repository.CarritoRepository;
 import com.example.Pago.repository.ClienteRepository;
+import com.example.Pago.repository.TarjetaRepository;
+import com.example.Pago.repository.TransaccionItemRepository;
 import com.example.Pago.repository.TransaccionRepository;
 
 import jakarta.transaction.Transactional;
 
 @Service
-public
-class CarritoService {
-    
+public class CarritoService {
+
     @Autowired
     private CarritoRepository carritoRepository;
 
@@ -28,6 +33,12 @@ class CarritoService {
 
     @Autowired
     private TransaccionRepository transaccionRepository;
+
+    @Autowired
+    private TarjetaRepository tarjetaRepository;
+
+    @Autowired
+    private TransaccionItemRepository transaccionItemRepository;
 
     public Carrito crearCarrito(Long clienteId) {
         Cliente cliente = clienteRepository.findById(clienteId)
@@ -41,43 +52,47 @@ class CarritoService {
         return carritoRepository.findById(clienteId);
     }
 
-
     public void eliminarCarrito(Long id) {
         carritoRepository.deleteById(id);
     }
 
     @Transactional
-    public TransaccionRespuestaDTO pagarCarrito(Long carritoId) {
+    public Transaccion pagarCarrito(Long carritoId, String numeroTarjeta) {
         Carrito carrito = carritoRepository.findById(carritoId)
                 .orElseThrow(() -> new RuntimeException("Carrito no encontrado"));
 
-        Cliente cliente = carrito.getCliente();
+        Tarjeta tarjeta = tarjetaRepository.findByNumeroTarjeta(numeroTarjeta);
+        if (tarjeta == null)
+            throw new RuntimeException("Tarjeta no encontrada");
+
         double total = carrito.getItems().stream()
-                .mapToDouble(item -> item.getProducto().getPrecio() * item.getCantidad())
+                .mapToDouble(i -> i.getProducto().getPrecio() * i.getCantidad())
                 .sum();
 
         Transaccion transaccion = new Transaccion();
-        transaccion.setCliente(cliente);
-        transaccion.setMonto(total);
-        transaccion.setFecha(LocalDate.now());
+        transaccion.setFecha(LocalDateTime.now());
+        transaccion.setEstado(tarjeta.getSaldo() >= total ? "APROBADA" : "RECHAZADA");
+        transaccion.setTotal(total);
+        transaccion.setCedula(tarjeta.getCliente().getCedula());
+        transaccion.setTarjeta(tarjeta);
 
-        String estado;
-        if (cliente.getSaldo() >= total) {
-            cliente.setSaldo(cliente.getSaldo() - total);
-            clienteRepository.save(cliente);
-            estado = "APROBADA";
-        } else {
-            estado = "RECHAZADA";
-        }
-
-        transaccion.setEstado(estado);
         transaccionRepository.save(transaccion);
 
-        return new TransaccionRespuestaDTO(
-                cliente.getCorreo(),
-                cliente.getNombre(),
-                estado
-        );
+        for (CarritoItem item : carrito.getItems()) {
+            TransaccionItem ti = new TransaccionItem();
+            ti.setCantidad(item.getCantidad());
+            ti.setPrecioUnitario(item.getProducto().getPrecio());
+            ti.setPaquete(item.getProducto());
+            ti.setTransaccion(transaccion);
+            transaccionItemRepository.save(ti);
+        }
+
+        if (tarjeta.getSaldo() >= total) {
+            tarjeta.setSaldo(tarjeta.getSaldo() - total);
+            tarjetaRepository.save(tarjeta);
+        }
+
+        return transaccion;
     }
-    
+
 }
