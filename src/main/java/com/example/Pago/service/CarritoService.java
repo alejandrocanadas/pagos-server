@@ -65,19 +65,24 @@ public class CarritoService {
         if (tarjeta == null)
             throw new RuntimeException("Tarjeta no encontrada");
 
+        // Calcular total
         double total = carrito.getItems().stream()
                 .mapToDouble(i -> i.getProducto().getPrecio() * i.getCantidad())
                 .sum();
 
+        boolean fondosSuficientes = tarjeta.getSaldo() >= total;
+
+        // Crear transacción
         Transaccion transaccion = new Transaccion();
         transaccion.setFecha(LocalDateTime.now());
-        transaccion.setEstado(tarjeta.getSaldo() >= total ? "APROBADA" : "RECHAZADA");
+        transaccion.setEstado(fondosSuficientes ? "APROBADA" : "RECHAZADA");
         transaccion.setTotal(total);
         transaccion.setCedula(tarjeta.getCliente().getCedula());
         transaccion.setTarjeta(tarjeta);
 
         transaccionRepository.save(transaccion);
 
+        // Registrar items
         for (CarritoItem item : carrito.getItems()) {
             TransaccionItem ti = new TransaccionItem();
             ti.setCantidad(item.getCantidad());
@@ -87,9 +92,14 @@ public class CarritoService {
             transaccionItemRepository.save(ti);
         }
 
-        if (tarjeta.getSaldo() >= total) {
+        // Si la transacción fue aprobada
+        if (fondosSuficientes) {
+
             tarjeta.setSaldo(tarjeta.getSaldo() - total);
             tarjetaRepository.save(tarjeta);
+
+            carrito.getItems().clear();
+            carritoRepository.save(carrito);
         }
 
         return transaccion;
