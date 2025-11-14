@@ -49,8 +49,8 @@ public class CarritoController {
     }
 
     @PostMapping("/{id}/pagar")
-    public ResponseEntity<Transaccion> pagarCarrito(@PathVariable Long id, @RequestBody PagoRequest request) {
-        Transaccion transaccion = carritoService.pagarCarrito(id, request.getNumeroTarjeta());
-        return ResponseEntity.ok(transaccion);
+    public ResponseEntity<TransaccionRespuestaDTO> pagarCarrito(@PathVariable Long id, @RequestBody PagoRequest request) {
+        TransaccionRespuestaDTO respuestaDTO = carritoService.pagarCarrito(id, request.getNumeroTarjeta());
+        return ResponseEntity.ok(respuestaDTO);
     }
 }

@@ -7,6 +7,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class TransaccionRespuestaDTO {
     private String correo;
-    private String nombre;
+    private double precio;
     private String estado;
 }

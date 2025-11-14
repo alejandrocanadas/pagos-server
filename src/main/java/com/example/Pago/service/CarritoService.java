@@ -57,7 +57,7 @@ public class CarritoService {
     }
 
     @Transactional
-    public Transaccion pagarCarrito(Long carritoId, String numeroTarjeta) {
+    public TransaccionRespuestaDTO pagarCarrito(Long carritoId, String numeroTarjeta) {
         Carrito carrito = carritoRepository.findById(carritoId)
                 .orElseThrow(() -> new RuntimeException("Carrito no encontrado"));
 
@@ -65,24 +65,22 @@ public class CarritoService {
         if (tarjeta == null)
             throw new RuntimeException("Tarjeta no encontrada");
 
-        // Calcular total
         double total = carrito.getItems().stream()
                 .mapToDouble(i -> i.getProducto().getPrecio() * i.getCantidad())
                 .sum();
 
         boolean fondosSuficientes = tarjeta.getSaldo() >= total;
 
-        // Crear transacción
+        // Crear transaccion
         Transaccion transaccion = new Transaccion();
         transaccion.setFecha(LocalDateTime.now());
         transaccion.setEstado(fondosSuficientes ? "APROBADA" : "RECHAZADA");
         transaccion.setTotal(total);
         transaccion.setCedula(tarjeta.getCliente().getCedula());
         transaccion.setTarjeta(tarjeta);
-
         transaccionRepository.save(transaccion);
 
-        // Registrar items
+        // Items de transacción
         for (CarritoItem item : carrito.getItems()) {
             TransaccionItem ti = new TransaccionItem();
             ti.setCantidad(item.getCantidad());
@@ -92,9 +90,8 @@ public class CarritoService {
             transaccionItemRepository.save(ti);
         }
 
-        // Si la transacción fue aprobada
+        // Si se aprobó
         if (fondosSuficientes) {
-
             tarjeta.setSaldo(tarjeta.getSaldo() - total);
             tarjetaRepository.save(tarjeta);
 
@@ -102,7 +99,11 @@ public class CarritoService {
             carritoRepository.save(carrito);
         }
 
-        return transaccion;
+        
+        return new TransaccionRespuestaDTO(
+                tarjeta.getCliente().getCorreo(),
+                total,
+                transaccion.getEstado());
     }
 
 }
