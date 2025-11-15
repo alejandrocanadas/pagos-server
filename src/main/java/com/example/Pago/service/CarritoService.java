@@ -2,6 +2,8 @@ package com.example.Pago.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,9 @@ public class CarritoService {
 
     @Autowired
     private TransaccionItemRepository transaccionItemRepository;
+
+    @Autowired
+    private PagoPublisherService pagosPublisher;
 
     public Carrito crearCarrito(Long clienteId) {
         Cliente cliente = clienteRepository.findById(clienteId)
@@ -99,7 +104,14 @@ public class CarritoService {
             carritoRepository.save(carrito);
         }
 
-        
+        Map<String, Object> mensaje = new HashMap<>();
+        mensaje.put("correo", tarjeta.getCliente().getCorreo());
+        mensaje.put("nombre", tarjeta.getCliente().getNombre());
+        mensaje.put("estado", transaccion.getEstado());
+        mensaje.put("total", total);
+
+        pagosPublisher.enviarResultadoPago(mensaje);
+
         return new TransaccionRespuestaDTO(
                 tarjeta.getCliente().getCorreo(),
                 total,

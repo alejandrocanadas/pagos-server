@@ -44,7 +44,7 @@ public class ClienteController {
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevo);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{cedula}")
     public ResponseEntity<Cliente> actualizarCliente(@PathVariable String cedula, @RequestBody Cliente datos) {
         Cliente actualizado = clienteService.actualizarCliente(cedula, datos);
         return ResponseEntity.ok(actualizado);
