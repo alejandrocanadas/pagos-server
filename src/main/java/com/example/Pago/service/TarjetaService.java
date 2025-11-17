@@ -1,5 +1,6 @@
 package com.example.Pago.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +28,10 @@ public class TarjetaService {
     }
 
     Tarjeta tarjeta = new Tarjeta();
-    tarjeta.setNumeroTarjeta(dto.getNumero());
+    tarjeta.setNumeroTarjeta(dto.getnumeroTarjeta());
     tarjeta.setTipo(dto.getTipo());
-    tarjeta.setSaldo(dto.getSaldo());
-    tarjeta.setFechaVencimiento(dto.getFechaVencimiento());
+    tarjeta.setSaldo(0.0);
+    tarjeta.setFechaVencimiento(LocalDate.parse(dto.getFechaVencimiento()));
     tarjeta.setCliente(cliente);
 
     return tarjetaRepository.save(tarjeta);

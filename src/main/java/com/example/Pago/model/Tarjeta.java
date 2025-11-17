@@ -1,6 +1,9 @@
 package com.example.Pago.model;
 
+import java.time.LocalDate;
 import java.util.Date;
+
+import org.springframework.cglib.core.Local;
 
 import jakarta.annotation.Generated;
 import jakarta.persistence.Column;
@@ -35,11 +38,18 @@ public class Tarjeta {
     private Cliente cliente;
 
     @Temporal(TemporalType.DATE)
-    private Date fechaVencimiento;
+    private LocalDate fechaVencimiento;
 
     private Double saldo;
 
     private String tipo;
+
+    public void setFechaVencimiento(LocalDate fechaVencimiento) {
+        this.fechaVencimiento = fechaVencimiento;
+    }
+
+    // Getters y Setters
+
 }
     
     

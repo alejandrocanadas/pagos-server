@@ -45,26 +45,51 @@ public class CarritoService {
     @Autowired
     private PagoPublisherService pagosPublisher;
 
-    public Carrito crearCarrito(Long clienteId) {
-        Cliente cliente = clienteRepository.findById(clienteId)
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+
+    public Carrito crearCarrito(String cedulaCliente) {
+        Cliente cliente = clienteRepository.findByCedula(cedulaCliente);
+        if (cliente == null)
+            throw new RuntimeException("Cliente no encontrado");
         Carrito carrito = new Carrito();
         carrito.setCliente(cliente);
         return carritoRepository.save(carrito);
     }
 
-    public Optional<Carrito> obtenerPorCliente(Long clienteId) {
-        return carritoRepository.findById(clienteId);
+    public Carrito obtenerPorCliente(String cedulaCliente) {
+        Cliente cliente = clienteRepository.findByCedula(cedulaCliente);
+        if (cliente == null)
+            throw new RuntimeException("Cliente no encontrado");
+
+        Carrito carrito = carritoRepository.findByCliente(cliente);
+        if (carrito == null)
+            throw new RuntimeException("Carrito no encontrado para el cliente");
+
+        return carrito;
     }
 
-    public void eliminarCarrito(Long id) {
-        carritoRepository.deleteById(id);
+    public void eliminarCarrito(String cedulaCliente) {
+
+        Cliente cliente = clienteRepository.findByCedula(cedulaCliente);
+        if (cliente == null)
+            throw new RuntimeException("Cliente no encontrado");
+
+        Carrito carrito = carritoRepository.findByCliente(cliente);
+        if (carrito == null)
+            throw new RuntimeException("El cliente no tiene carrito asignado");
+
+        carritoRepository.delete(carrito);
     }
 
     @Transactional
-    public TransaccionRespuestaDTO pagarCarrito(Long carritoId, String numeroTarjeta) {
-        Carrito carrito = carritoRepository.findById(carritoId)
-                .orElseThrow(() -> new RuntimeException("Carrito no encontrado"));
+    public TransaccionRespuestaDTO pagarCarrito(String cedulaCliente, String numeroTarjeta) {
+
+        Cliente cliente = clienteRepository.findByCedula(cedulaCliente);
+        if (cliente == null)
+            throw new RuntimeException("Cliente no encontrado");
+
+        Carrito carrito = carritoRepository.findByCliente(cliente);
+        if (carrito == null)
+            throw new RuntimeException("El cliente no tiene carrito activo");
 
         Tarjeta tarjeta = tarjetaRepository.findByNumeroTarjeta(numeroTarjeta);
         if (tarjeta == null)
@@ -76,16 +101,16 @@ public class CarritoService {
 
         boolean fondosSuficientes = tarjeta.getSaldo() >= total;
 
-        // Crear transaccion
+        // Crear transacción
         Transaccion transaccion = new Transaccion();
         transaccion.setFecha(LocalDateTime.now());
         transaccion.setEstado(fondosSuficientes ? "APROBADA" : "RECHAZADA");
         transaccion.setTotal(total);
-        transaccion.setCedula(tarjeta.getCliente().getCedula());
+        transaccion.setCedula(cliente.getCedula());
         transaccion.setTarjeta(tarjeta);
         transaccionRepository.save(transaccion);
 
-        // Items de transacción
+        // Guardar items
         for (CarritoItem item : carrito.getItems()) {
             TransaccionItem ti = new TransaccionItem();
             ti.setCantidad(item.getCantidad());
@@ -95,7 +120,7 @@ public class CarritoService {
             transaccionItemRepository.save(ti);
         }
 
-        // Si se aprobó
+        // Si se aprobó, descontar saldo y limpiar carrito
         if (fondosSuficientes) {
             tarjeta.setSaldo(tarjeta.getSaldo() - total);
             tarjetaRepository.save(tarjeta);
@@ -104,18 +129,18 @@ public class CarritoService {
             carritoRepository.save(carrito);
         }
 
+        // Enviar mensaje por cola
         Map<String, Object> mensaje = new HashMap<>();
-        mensaje.put("correo", tarjeta.getCliente().getCorreo());
-        mensaje.put("nombre", tarjeta.getCliente().getNombre());
+        mensaje.put("correo", cliente.getCorreo());
+        mensaje.put("nombre", cliente.getNombre());
         mensaje.put("estado", transaccion.getEstado());
         mensaje.put("total", total);
 
         pagosPublisher.enviarResultadoPago(mensaje);
 
         return new TransaccionRespuestaDTO(
-                tarjeta.getCliente().getCorreo(),
+                cliente.getCorreo(),
                 total,
                 transaccion.getEstado());
     }
-
 }

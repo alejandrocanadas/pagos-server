@@ -3,6 +3,8 @@ package com.example.Pago.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,6 +29,7 @@ public class Transaccion {
 
     private String cedula;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "tarjeta_id", nullable = false)
     private Tarjeta tarjeta;

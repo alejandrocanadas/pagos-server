@@ -28,15 +28,15 @@ public class CarritoItemController {
     @PostMapping
     public ResponseEntity<CarritoItem> agregarItem(@RequestBody CarritoItemDTO dto) {
         CarritoItem nuevo = carritoItemService.agregarItem(
-                dto.getCarritoId(),
-                dto.getProductoId(),
+                dto.getCedulaCliente(),
+                dto.getNombrePaquete(),
                 dto.getCantidad());
         return ResponseEntity.ok(nuevo);
     }
 
-    @GetMapping("/{carritoId}")
-    public Optional<CarritoItem> obtenerPorCarrito(@PathVariable Long carritoId) {
-        return carritoItemService.obtenerPorCarrito(carritoId);
+    @GetMapping("/{cedulaCliente}")
+    public List<CarritoItem> obtenerPorCarrito(@PathVariable String cedulaCliente) {
+        return carritoItemService.obtenerPorCarrito(cedulaCliente);
     }
 
     @DeleteMapping("/{id}")

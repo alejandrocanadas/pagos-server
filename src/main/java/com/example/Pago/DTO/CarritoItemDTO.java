@@ -3,16 +3,16 @@ package com.example.Pago.DTO;
 public class CarritoItemDTO {
     private Long id;
     private int cantidad;
-    private Long productoId;
-    private Long carritoId;
+    private String nombrePaquete; 
+    private String cedulaCliente;
 
-    public CarritoItemDTO() {}
+    public CarritoItemDTO() { }
 
-    public CarritoItemDTO(Long id, int cantidad, Long productoId, Long carritoId) {
+    public CarritoItemDTO(Long id, int cantidad, String nombrePaquete, String cedulaCliente) {
         this.id = id;
         this.cantidad = cantidad;
-        this.productoId = productoId;
-        this.carritoId = carritoId;
+        this.nombrePaquete = nombrePaquete;
+        this.cedulaCliente = cedulaCliente;
     }
 
     public Long getId() { return id; }
@@ -21,9 +21,9 @@ public class CarritoItemDTO {
     public int getCantidad() { return cantidad; }
     public void setCantidad(int cantidad) { this.cantidad = cantidad; }
 
-    public Long getProductoId() { return productoId; }
-    public void setProductoId(Long productoId) { this.productoId = productoId; }
+    public String getNombrePaquete() { return nombrePaquete; }
+    public void setNombrePaquete(String nombrePaquete) { this.nombrePaquete = nombrePaquete; }
 
-    public Long getCarritoId() { return carritoId; }
-    public void setCarritoId(Long carritoId) { this.carritoId = carritoId; }
+    public String getCedulaCliente() { return cedulaCliente; }
+    public void setCedulaCliente(String cedulaCliente) { this.cedulaCliente = cedulaCliente; }
 }

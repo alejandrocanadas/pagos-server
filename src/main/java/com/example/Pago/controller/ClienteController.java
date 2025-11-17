@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.Pago.DTO.ClienteRegistroDTO;
 import com.example.Pago.model.Cliente;
 import com.example.Pago.model.Transaccion;
 import com.example.Pago.repository.ClienteRepository;
@@ -39,7 +40,7 @@ public class ClienteController {
     }
 
     @PostMapping
-    public ResponseEntity<Cliente> crearCliente(@RequestBody Cliente cliente) {
+    public ResponseEntity<Cliente> crearCliente(@RequestBody ClienteRegistroDTO cliente) {
         Cliente nuevo = clienteService.crearCliente(cliente);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevo);
     }
@@ -50,7 +51,7 @@ public class ClienteController {
         return ResponseEntity.ok(actualizado);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{cedula}")
     public ResponseEntity<Void> eliminarCliente(@PathVariable String cedula) {
         clienteService.eliminarPorCedula(cedula);
         return ResponseEntity.noContent().build();

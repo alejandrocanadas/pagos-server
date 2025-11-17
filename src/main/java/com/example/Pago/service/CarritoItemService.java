@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 
 import com.example.Pago.model.Carrito;
 import com.example.Pago.model.CarritoItem;
+import com.example.Pago.model.Cliente;
 import com.example.Pago.model.Paquete;
 import com.example.Pago.repository.CarritoItemRepository;
 import com.example.Pago.repository.CarritoRepository;
+import com.example.Pago.repository.ClienteRepository;
 import com.example.Pago.repository.PaqueteRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -25,12 +27,24 @@ public class CarritoItemService {
     private final CarritoRepository carritoRepository;
     @Autowired
     private final PaqueteRepository paqueteRepository;
+    @Autowired
+    private final ClienteRepository clienteRepository;
 
-    public CarritoItem agregarItem(Long carritoId, Long productoId, Integer cantidad) {
-        Carrito carrito = carritoRepository.findById(carritoId)
-                .orElseThrow(() -> new RuntimeException("Carrito no encontrado"));
-        Paquete paquete = paqueteRepository.findById(productoId)
-                .orElseThrow(() -> new RuntimeException("Paquete no encontrado"));
+    public CarritoItem agregarItem(String cedulaCliente, String nombrePaquete, Integer cantidad) {
+        Cliente cliente = clienteRepository.findByCedula(cedulaCliente);
+        if (cliente == null) {
+            throw new RuntimeException("Cliente no encontrado con cédula: " + cedulaCliente);
+        }
+
+        Carrito carrito = carritoRepository.findByCliente(cliente);
+        if (carrito == null) {
+            throw new RuntimeException("El cliente no tiene carrito.");
+        }
+
+        Paquete paquete = paqueteRepository.findByNombre(nombrePaquete);
+        if (paquete == null) {
+            throw new RuntimeException("Paquete no encontrado: " + nombrePaquete);
+        }
 
         CarritoItem item = new CarritoItem();
         item.setCarrito(carrito);
@@ -40,8 +54,20 @@ public class CarritoItemService {
         return carritoItemRepository.save(item);
     }
 
-    public Optional<CarritoItem> obtenerPorCarrito(Long carritoId) {
-        return carritoItemRepository.findById(carritoId);
+
+    public List<CarritoItem> obtenerPorCarrito(String cedulaCliente) {
+
+        Cliente cliente = clienteRepository.findByCedula(cedulaCliente);
+        if (cliente == null) {
+            throw new RuntimeException("Cliente no encontrado con cédula: " + cedulaCliente);
+        }
+
+        Carrito carrito = carritoRepository.findByCliente(cliente);
+        if (carrito == null) {
+            throw new RuntimeException("El cliente no tiene carrito.");
+        }
+
+        return carrito.getItems();
     }
 
     public void eliminarItem(Long id) {

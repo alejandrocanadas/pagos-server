@@ -31,26 +31,34 @@ public class CarritoController {
 
     @PostMapping
     public ResponseEntity<Carrito> crearCarrito(@RequestBody CarritoDTO dto) {
-        Carrito nuevo = carritoService.crearCarrito(dto.getClienteId());
+        Carrito nuevo = carritoService.crearCarrito(dto.getCedulaCliente());
         return ResponseEntity.ok(nuevo);
     }
 
-    @GetMapping("/{clienteId}")
-    public ResponseEntity<Carrito> obtenerPorCliente(@PathVariable Long clienteId) {
-        return carritoService.obtenerPorCliente(clienteId)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/{cedulaCliente}")
+    public ResponseEntity<Carrito> obtenerPorCliente(@PathVariable String cedulaCliente) {
+        try {
+            Carrito carrito = carritoService.obtenerPorCliente(cedulaCliente);
+            return ResponseEntity.ok(carrito);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarCarrito(@PathVariable Long id) {
-        carritoService.eliminarCarrito(id);
+    @DeleteMapping("/{cedulaCliente}")
+    public ResponseEntity<Void> eliminarCarrito(@PathVariable String cedulaCliente) {
+        carritoService.eliminarCarrito(cedulaCliente);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{id}/pagar")
-    public ResponseEntity<TransaccionRespuestaDTO> pagarCarrito(@PathVariable Long id, @RequestBody PagoRequest request) {
-        TransaccionRespuestaDTO respuestaDTO = carritoService.pagarCarrito(id, request.getNumeroTarjeta());
+    @PostMapping("/{cedulaCliente}/pagar")
+    public ResponseEntity<TransaccionRespuestaDTO> pagarCarrito(
+            @PathVariable String cedulaCliente,
+            @RequestBody PagoRequest request) {
+
+        TransaccionRespuestaDTO respuestaDTO =
+                carritoService.pagarCarrito(cedulaCliente, request.getNumeroTarjeta());
+
         return ResponseEntity.ok(respuestaDTO);
     }
 }

@@ -1,5 +1,7 @@
 package com.example.Pago.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -27,6 +29,7 @@ public class CarritoItem {
     @JoinColumn(name = "producto_id")
     private Paquete producto;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "carrito_id")
     private Carrito carrito;

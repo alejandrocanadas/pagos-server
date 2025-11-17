@@ -4,20 +4,18 @@ import java.util.Date;
 
 public class TarjetaDTO {
     private Long id;
-    private String numero;
+    private String numeroTarjeta;
     private String tipo;
-    private Date fechaVencimiento;
-    private Double saldo;
+    private String fechaVencimiento;
     private String cedulaCliente;
 
     public TarjetaDTO() {}
 
-    public TarjetaDTO(Long id, String numero, String tipo, Date fechaVencimiento, Double saldo,  String cedulaCliente) {
+    public TarjetaDTO(Long id, String numeroTarjeta, String tipo, String fechaVencimiento,  String cedulaCliente) {
         this.id = id;
-        this.numero = numero;
+        this.numeroTarjeta = numeroTarjeta;
         this.tipo = tipo;
         this.fechaVencimiento = fechaVencimiento;
-        this.saldo = saldo;
 
         this.cedulaCliente = cedulaCliente;
     }
@@ -25,14 +23,12 @@ public class TarjetaDTO {
     // Getters y setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-    public String getNumero() { return numero; }
-    public void setNumero(String numero) { this.numero = numero; }
+    public String getnumeroTarjeta() { return numeroTarjeta; }
+    public void setnumeroTarjeta(String numeroTarjeta) { this.numeroTarjeta = numeroTarjeta; }
     public String getTipo() { return tipo; }
     public void setTipo(String tipo) { this.tipo = tipo; }
-    public Date getFechaVencimiento() { return fechaVencimiento; }
-    public void setFechaVencimiento(Date fechaVencimiento) { this.fechaVencimiento = fechaVencimiento; }
-    public Double getSaldo() { return saldo; }
-    public void setSaldo(Double saldo) { this.saldo = saldo; }
+    public String getFechaVencimiento() { return fechaVencimiento; }
+    public void setFechaVencimiento(String fechaVencimiento) { this.fechaVencimiento = fechaVencimiento; }
     public String getCedulaCliente() { return cedulaCliente; }
     public void setCedulaCliente(String cedulaCliente) { this.cedulaCliente = cedulaCliente; }
 }

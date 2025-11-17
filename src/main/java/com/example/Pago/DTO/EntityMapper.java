@@ -43,8 +43,7 @@ public class EntityMapper {
                 t.getId(),
                 t.getNumeroTarjeta(),
                 t.getTipo(),
-                t.getFechaVencimiento(),
-                t.getSaldo(),
+                t.getFechaVencimiento().toString(),
                 cedulaCliente);
     }
 
@@ -54,10 +53,10 @@ public class EntityMapper {
 
         Tarjeta t = new Tarjeta();
         t.setId(dto.getId());
-        t.setNumeroTarjeta(dto.getNumero());
+        t.setNumeroTarjeta(dto.getnumeroTarjeta());
         t.setTipo(dto.getTipo());
-        t.setFechaVencimiento(dto.getFechaVencimiento());
-        t.setSaldo(dto.getSaldo());
+        t.setFechaVencimiento(LocalDate.parse(dto.getFechaVencimiento()));
+        t.setSaldo(0.0);
         t.setCliente(cliente);
         return t;
     }
@@ -86,8 +85,8 @@ public class EntityMapper {
     public static CarritoDTO toCarritoDTO(Carrito c) {
         if (c == null)
             return null;
-        Long clienteId = (c.getCliente() != null) ? c.getCliente().getId() : null;
-        return new CarritoDTO(c.getId(), clienteId);
+        String clienteCedula = (c.getCliente() != null) ? c.getCliente().getCedula() : null;
+        return new CarritoDTO(c.getId(), clienteCedula);
     }
 
     public static Carrito toCarritoEntity(CarritoDTO dto, Cliente cliente) {
@@ -102,14 +101,24 @@ public class EntityMapper {
     public static CarritoItemDTO toCarritoItemDTO(CarritoItem item) {
         if (item == null)
             return null;
-        Long productoId = (item.getProducto() != null) ? item.getProducto().getId() : null;
-        Long carritoId = (item.getCarrito() != null) ? item.getCarrito().getId() : null;
+
+        Long productoId = (item.getProducto() != null)
+                ? item.getProducto().getId()
+                : null;
+
+        String nombrePaquete = (item.getProducto() != null)
+                ? item.getProducto().getNombre()
+                : null;
+
+        String cedulaCliente = (item.getCarrito() != null && item.getCarrito().getCliente() != null)
+                ? item.getCarrito().getCliente().getCedula()
+                : null;
 
         return new CarritoItemDTO(
                 item.getId(),
                 item.getCantidad(),
-                productoId,
-                carritoId);
+                nombrePaquete,
+                cedulaCliente);
     }
 
     public static CarritoItem toCarritoItemEntity(CarritoItemDTO dto, Carrito carrito, Paquete paquete) {

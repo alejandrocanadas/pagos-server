@@ -2,19 +2,19 @@ package com.example.Pago.DTO;
 
 public class CarritoDTO {
     private Long id;
-    private Long clienteId;
+    private String cedulaCliente;
 
     public CarritoDTO() {}
 
-    public CarritoDTO(Long id, Long clienteId) {
+    public CarritoDTO(Long id, String cedulaCliente) {
         this.id = id;
-        this.clienteId = clienteId;
+        this.cedulaCliente = cedulaCliente;
     }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public Long getClienteId() { return clienteId; }
-    public void setClienteId(Long clienteId) { this.clienteId = clienteId; }
+    public String getCedulaCliente() { return cedulaCliente; }
+    public void setCedulaCliente(String cedulaCliente) { this.cedulaCliente = cedulaCliente; }
 }
 

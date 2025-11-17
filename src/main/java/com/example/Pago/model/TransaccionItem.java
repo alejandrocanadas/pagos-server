@@ -1,5 +1,7 @@
 package com.example.Pago.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,6 +25,7 @@ public class TransaccionItem {
     @JoinColumn(name = "paquete_id", nullable = false)
     private Paquete paquete;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "transaccion_id", nullable = false)
     private Transaccion transaccion;

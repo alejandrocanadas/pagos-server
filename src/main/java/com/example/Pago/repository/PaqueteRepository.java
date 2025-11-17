@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.example.Pago.model.Paquete;
 
 @Repository
-public interface PaqueteRepository extends JpaRepository<Paquete, Long> {}
+public interface PaqueteRepository extends JpaRepository<Paquete, Long> {
+    Paquete findByNombre(String nombre);
+}
