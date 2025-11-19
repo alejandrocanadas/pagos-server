@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Pago.DTO.ClienteRegistroDTO;
 import com.example.Pago.model.Cliente;
-import com.example.Pago.model.Transaccion;
 import com.example.Pago.repository.ClienteRepository;
 import com.example.Pago.service.ClienteService;
 

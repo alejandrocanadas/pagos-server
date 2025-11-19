@@ -10,8 +10,7 @@ import com.example.Pago.model.CarritoItem;
 import com.example.Pago.model.Cliente;
 import com.example.Pago.model.Paquete;
 import com.example.Pago.model.Tarjeta;
-import com.example.Pago.model.Transaccion;
-import com.example.Pago.model.TransaccionItem;
+
 
 public class EntityMapper {
     public static ClienteDTO toClienteDTO(Cliente c) {
@@ -129,66 +128,6 @@ public class EntityMapper {
         item.setCantidad(dto.getCantidad());
         item.setCarrito(carrito);
         item.setProducto(paquete);
-        return item;
-    }
-
-    public static TransaccionDTO toTransaccionDTO(Transaccion t) {
-        if (t == null)
-            return null;
-
-        List<TransaccionItemDTO> items = (t.getItems() != null)
-                ? t.getItems().stream().map(EntityMapper::toTransaccionItemDTO).collect(Collectors.toList())
-                : null;
-
-        return new TransaccionDTO(
-                t.getId(),
-                t.getTotal(),
-                t.getEstado(),
-                t.getFecha(),
-                t.getCedula(),
-                (t.getTarjeta() != null) ? t.getTarjeta().getId() : null,
-                items);
-    }
-
-    public static Transaccion toTransaccionEntity(TransaccionDTO dto, Tarjeta tarjeta) {
-        if (dto == null)
-            return null;
-        Transaccion t = new Transaccion();
-        t.setId(dto.getId());
-        t.setTotal(dto.getTotal());
-        t.setEstado(dto.getEstado());
-        t.setFecha(dto.getFecha() != null ? dto.getFecha() : LocalDateTime.now());
-        t.setCedula(dto.getCedula());
-        t.setTarjeta(tarjeta);
-
-        if (dto.getItems() != null) {
-            List<TransaccionItem> items = dto.getItems().stream()
-                    .map(i -> toTransaccionItemEntity(i, t))
-                    .collect(Collectors.toList());
-            t.setItems(items);
-        }
-
-        return t;
-    }
-
-    public static TransaccionItemDTO toTransaccionItemDTO(TransaccionItem item) {
-        if (item == null)
-            return null;
-        return new TransaccionItemDTO(
-                item.getId(),
-                item.getCantidad(),
-                item.getPrecioUnitario(),
-                (item.getPaquete() != null) ? item.getPaquete().getId() : null);
-    }
-
-    public static TransaccionItem toTransaccionItemEntity(TransaccionItemDTO dto, Transaccion transaccion) {
-        if (dto == null)
-            return null;
-        TransaccionItem item = new TransaccionItem();
-        item.setId(dto.getId());
-        item.setCantidad(dto.getCantidad());
-        item.setPrecioUnitario(dto.getPrecioUnitario());
-        item.setTransaccion(transaccion);
         return item;
     }
 

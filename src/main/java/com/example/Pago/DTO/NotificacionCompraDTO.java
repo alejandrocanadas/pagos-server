@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransaccionItemDTO {
-    private Long id;
-    private Integer cantidad;
-    private Double precioUnitario;
-    private Long paqueteId;
+public class NotificacionCompraDTO {
+
+    private String correoCliente;
+    private String estado;   // PAGADA / FALLIDA
+    private Double monto;
 }

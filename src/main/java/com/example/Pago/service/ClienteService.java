@@ -9,9 +9,8 @@ import org.springframework.web.client.RestTemplate;
 import com.example.Pago.DTO.ClienteRegistroDTO;
 import com.example.Pago.DTO.RegistroRequest;
 import com.example.Pago.model.Cliente;
-import com.example.Pago.model.Transaccion;
 import com.example.Pago.repository.ClienteRepository;
-import com.example.Pago.repository.TransaccionRepository;
+
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,7 +33,7 @@ public class ClienteService {
         if (clienteRepository.existsByCedula(dto.getCedula())) {
             throw new RuntimeException("Ya existe un cliente con esta cédula");
         }
-        // 1. Guardar cliente en BD de Pagos
+        
         Cliente cliente = new Cliente();
         cliente.setNombre(dto.getNombre());
         cliente.setCedula(dto.getCedula());
@@ -42,7 +41,7 @@ public class ClienteService {
 
         Cliente guardado = clienteRepository.save(cliente);
 
-        // 2. Registrar usuario en Auth
+        
         RegistroRequest req = new RegistroRequest();
         req.setEmail(dto.getCorreo());
         req.setPassword(dto.getPassword());

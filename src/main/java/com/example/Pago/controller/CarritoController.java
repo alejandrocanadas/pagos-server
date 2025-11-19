@@ -1,7 +1,6 @@
 package com.example.Pago.controller;
 
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,15 +10,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.example.Pago.DTO.CarritoDTO;
 import com.example.Pago.DTO.PagoRequest;
-import com.example.Pago.DTO.TransaccionRespuestaDTO;
 import com.example.Pago.model.Carrito;
-import com.example.Pago.model.Transaccion;
 import com.example.Pago.repository.CarritoRepository;
 import com.example.Pago.service.CarritoService;
-
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -49,16 +44,5 @@ public class CarritoController {
     public ResponseEntity<Void> eliminarCarrito(@PathVariable String cedulaCliente) {
         carritoService.eliminarCarrito(cedulaCliente);
         return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/{cedulaCliente}/pagar")
-    public ResponseEntity<TransaccionRespuestaDTO> pagarCarrito(
-            @PathVariable String cedulaCliente,
-            @RequestBody PagoRequest request) {
-
-        TransaccionRespuestaDTO respuestaDTO =
-                carritoService.pagarCarrito(cedulaCliente, request.getNumeroTarjeta());
-
-        return ResponseEntity.ok(respuestaDTO);
     }
 }
